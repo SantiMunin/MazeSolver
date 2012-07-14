@@ -4,6 +4,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * Checks the correct functionality of Maze class.
+ * 
+ * @author Santiago Munín González
+ * 
+ */
 public class MazeTest {
 
 	@Test

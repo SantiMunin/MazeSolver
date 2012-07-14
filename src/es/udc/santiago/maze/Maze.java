@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
+import es.udc.santiago.maze.graphics.MazeGraphics;
+
 public class Maze {
 	private static int MINIMUM_DISTANCE_DIVISOR = 3;
 	private Cell[][] data;
@@ -87,8 +89,10 @@ public class Maze {
 	 * Gets all neighbors of the given cell.
 	 * 
 	 * @param cell
+	 *            Origin cell.
 	 * @param allWallsUp
-	 * @return
+	 *            Only gets neighbors with all walls up.
+	 * @return An array of cells in this order: TOP, RIGHT, BOTTOM, LEFT.
 	 */
 	private Cell[] getNeighbors(Cell cell, boolean allWallsUp) {
 		Cell[] result = new Cell[4];
@@ -119,15 +123,19 @@ public class Maze {
 						: null;
 			}
 		} else {
+			// Top neighbor
 			if (x > 0) {
 				result[0] = data[x - 1][y];
 			}
+			// Right neighbor
 			if (y < width - 1) {
 				result[1] = data[x][y + 1];
 			}
+			// Bottom neighbor
 			if (x < height - 1) {
 				result[2] = data[x + 1][y];
 			}
+			// Left neighbor
 			if (y > 0) {
 				result[3] = data[x][y - 1];
 			}
@@ -135,6 +143,14 @@ public class Maze {
 		return result;
 	}
 
+	/**
+	 * Knocks out the walls between two cells.
+	 * 
+	 * @param from
+	 *            First cell.
+	 * @param to
+	 *            Neighbor of the first cell.
+	 */
 	private void openPath(Cell from, Cell to) {
 		if (from.getX() == to.getX()) {
 			// Same row

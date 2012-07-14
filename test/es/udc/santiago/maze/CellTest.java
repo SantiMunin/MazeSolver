@@ -4,9 +4,18 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * Checks the correct functionality of Cell class.
+ * 
+ * @author Santiago Munín González
+ * 
+ */
 public class CellTest {
 
 	@Test
+	/**
+	 * Checks Cell.hasAllWallsUp() method.
+	 */
 	public void testHasAllWallsUp() {
 		Cell c1 = new Cell(0, 0, false, false, false, false);
 		Cell c2 = new Cell(0, 0, true, false, false, false);
@@ -23,6 +32,9 @@ public class CellTest {
 	}
 
 	@Test
+	/**
+	 * Checks Cell.hasAnyWallUp() method.
+	 */
 	public void testHasAnyWallUp() {
 		Cell c1 = new Cell(0, 0, false, false, false, false);
 		Cell c2 = new Cell(0, 0, true, false, false, false);

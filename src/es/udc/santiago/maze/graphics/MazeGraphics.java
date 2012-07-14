@@ -1,4 +1,4 @@
-package es.udc.santiago.maze;
+package es.udc.santiago.maze.graphics;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -9,6 +9,9 @@ import java.awt.ScrollPane;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import es.udc.santiago.maze.Cell;
+import es.udc.santiago.maze.Maze;
+
 public class MazeGraphics {
 	private static int SIZE = 8;
 	private static int MARGIN = 5;
@@ -16,7 +19,7 @@ public class MazeGraphics {
 
 	private Maze m;
 
-	MazeGraphics(Maze m) {
+	public MazeGraphics(Maze m) {
 		this.m = m;
 	}
 
@@ -89,7 +92,8 @@ public class MazeGraphics {
 		private void drawPoint(int x, int y, Color c, Graphics g) {
 			System.out.println("Drawing point (" + x + ", " + y + ")");
 			g.setColor(c);
-			g.fillRect(x*SIZE+MARGIN+2, y*SIZE+MARGIN+2, SIZE-3, SIZE-3);
+			g.fillRect(x * SIZE + MARGIN + 2, y * SIZE + MARGIN + 2, SIZE - 3,
+					SIZE - 3);
 			g.setColor(Color.BLACK);
 		}
 	}
