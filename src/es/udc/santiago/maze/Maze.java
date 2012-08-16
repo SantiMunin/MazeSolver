@@ -1,7 +1,9 @@
 package es.udc.santiago.maze;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Point;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +11,17 @@ import java.util.Queue;
 import java.util.Random;
 
 import es.udc.santiago.maze.graphics.MazeGraphics;
+import es.udc.santiago.maze.walker.Path;
+import es.udc.santiago.maze.walker.Walker;
+import es.udc.santiago.maze.walker.Walker.WalkResult;
 
+/**
+ * The main class of the application. It represents all cells of the maze and
+ * provides useful methods.
+ * 
+ * @author Santiago Munín González
+ * 
+ */
 public class Maze {
 	private static int MINIMUM_DISTANCE_DIVISOR = 3;
 	private Cell[][] data;
@@ -18,10 +30,30 @@ public class Maze {
 	private Point start;
 	private Point end;
 
+	/**
+	 * Generates a random maze
+	 * 
+	 * @param height
+	 *            Height
+	 * @param width
+	 *            Width
+	 */
 	public Maze(int height, int width) {
 		this.width = width;
 		this.height = height;
 		this.generate();
+	}
+
+	/**
+	 * Creates a maze from a table of cells.
+	 * 
+	 * @param cells
+	 *            Maze data.
+	 */
+	public Maze(Cell[][] cells) {
+		this.height = cells.length;
+		this.width = cells[0].length;
+		this.data = cells;
 	}
 
 	/**
@@ -33,6 +65,7 @@ public class Maze {
 		data = new Cell[height][width];
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
+				// data[height..0][0..width]
 				data[i][j] = new Cell(i, j);
 			}
 		}
@@ -217,11 +250,109 @@ public class Maze {
 		return data[row][column];
 	}
 
-	public static void main(String[] args) {
-		Maze m = new Maze(75, 150);
-		MazeGraphics mg = new MazeGraphics(m);
-		Frame f = mg.getMapFrame("Generated Map");
-		f.setVisible(true);
+	/**
+	 * Determines if two cells are connected.
+	 * 
+	 * @param from
+	 *            From cell
+	 * @param to
+	 *            To cell (must be neighbor of <i>from</i> cell).
+	 * @return true if it's possible.
+	 */
+	public boolean canWalk(Point from, Point to) {
+		int fromx = from.x;
+		int fromy = from.y;
+		int tox = to.x;
+		int toy = to.y;
+		if ((fromx < 0 || fromx >= width) || (fromy < 0 || fromy >= height)
+				|| (toy < 0 || toy >= height) || (tox < 0 || tox >= width)) {
+			return false;
+		}
+		Cell fromCell = data[fromy][fromx];
+		Cell toCell = data[toy][tox];
+		if (fromy == toy) {
+			// Same row
+			if (fromx + 1 == tox) {
+				// From -> To
+				return (!fromCell.hasRightWall() && !toCell.hasLeftWall());
+			} else {
+				if (fromx - 1 == tox) {
+					// To <- From
+					return (!fromCell.hasLeftWall() && !toCell.hasRightWall());
+				}
+			}
+		} else {
+			// Same column
+			if (fromy + 1 == toy) {
+				// From above to
+				return (!fromCell.hasBottomWall() && !toCell.hasTopWall());
+			} else {
+				if (fromy - 1 == toy) {
+					// To above from
+					return (!fromCell.hasTopWall() && !toCell.hasBottomWall());
+				}
+			}
+		}
+		return false;
 	}
 
+	/**
+	 * Finds out possible directions from a cell.
+	 * 
+	 * @param point
+	 *            Coordinates of the cell.
+	 * @param incomingDirection
+	 *            Incoming direction (it will be excluded)
+	 * @return A list of directions (integers).
+	 */
+	public List<Integer> findPossibleDirections(Point point,
+			int incomingDirection) {
+		List<Integer> result = new LinkedList<Integer>();
+		Point nextPoint = new Point(point);
+		nextPoint.setLocation(point.x, point.y);
+		if (this.canWalk(point, new Point(point.x, point.y - 1))
+				&& incomingDirection != Path.DOWN) {
+			result.add(Path.UP);
+		}
+		if (this.canWalk(point, new Point(point.x + 1, point.y))
+				&& incomingDirection != Path.LEFT) {
+			result.add(Path.RIGHT);
+		}
+		if (this.canWalk(point, new Point(point.x, point.y + 1))
+				&& incomingDirection != Path.UP) {
+			result.add(Path.DOWN);
+		}
+		if (this.canWalk(point, new Point(point.x - 1, point.y))
+				&& incomingDirection != Path.RIGHT) {
+			result.add(Path.LEFT);
+		}
+		return result;
+	}
+
+	/**
+	 * Finds out possible directions from a cell.
+	 * 
+	 * @param point
+	 *            Coordinates of the cell.
+	 * @return A list of directions (integers).
+	 */
+	public List<Integer> findPossibleDirections(Point point) {
+		return this.findPossibleDirections(point, Path.NO_DIRECTION);
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		Maze m = new Maze(2, 50);
+		MazeGraphics mg = new MazeGraphics(m);
+		Frame f = mg.getMapFrame("Generated Map");
+		Walker k = new Walker(m);
+		WalkResult wr = k.walk();
+		System.out.println("FOUND!");
+	/*	for (Path p : wr.getWrongPaths()) {
+			mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(
+					Color.DARK_GRAY, p));
+		}
+		mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(Color.BLACK, wr
+				.getCorrectPath()));*/
+		f.setVisible(true);
+	}
 }

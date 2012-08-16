@@ -15,6 +15,14 @@ public class Cell {
 	private boolean bottomWall;
 	private boolean leftWall;
 
+	/**
+	 * Instances a new cell in coordinates (x, y) with all walls up.
+	 * 
+	 * @param x
+	 *            X coord.
+	 * @param y
+	 *            Y coord.
+	 */
 	public Cell(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -24,11 +32,27 @@ public class Cell {
 		this.leftWall = true;
 	}
 
-	public Cell(int x, int y, boolean upWall, boolean rightWall,
+	/**
+	 * Instances a new cell in coordinates (x, y) with the specified walls up.
+	 * 
+	 * @param x
+	 *            X coord.
+	 * @param y
+	 *            Y coord.
+	 * @param topWall
+	 *            Top wall.
+	 * @param rightWall
+	 *            Right wall.
+	 * @param bottomWall
+	 *            Bottom wall.
+	 * @param leftWall
+	 *            Left wall.
+	 */
+	public Cell(int x, int y, boolean topWall, boolean rightWall,
 			boolean bottomWall, boolean leftWall) {
 		this.x = x;
 		this.y = y;
-		this.topWall = upWall;
+		this.topWall = topWall;
 		this.rightWall = rightWall;
 		this.bottomWall = bottomWall;
 		this.leftWall = leftWall;
