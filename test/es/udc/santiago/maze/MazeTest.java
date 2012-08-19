@@ -54,20 +54,20 @@ public class MazeTest {
 	@Test
 	public void testCanWalk() {
 		Cell[][] cells = new Cell[5][10];
-		Cell c = new Cell(0,0, true, false, true, true);
+		Cell c = new Cell(0, 0, true, false, true, true);
 		cells[0][0] = c;
-		c = new Cell(1,0, true, true, true, false);
+		c = new Cell(1, 0, true, true, true, false);
 		cells[0][1] = c;
-		Maze m = new Maze(cells);
-		assertTrue(m.canWalk(new Point(0,0), new Point(1,0)));
-		cells[0][1] = new Cell(1,0, true, true, true, true);
-		m = new Maze(cells);
-		assertFalse(m.canWalk(new Point(0,0), new Point(1,0)));
-		assertFalse(m.canWalk(new Point(0,0), new Point(-1,0)));
-		assertFalse(m.canWalk(new Point(0,0), new Point(200,0)));
-		cells[0][2] = new Cell(2,0, true, false, false, false);
-		cells[0][1] = new Cell(1,0, true, false, true, true);
-		assertTrue(m.canWalk(new Point(1,0), new Point(2,0)));
+		Maze m = new Maze(cells, null, null);
+		assertTrue(m.canWalk(new Point(0, 0), new Point(1, 0)));
+		cells[0][1] = new Cell(1, 0, true, true, true, true);
+		m = new Maze(cells, null, null);
+		assertFalse(m.canWalk(new Point(0, 0), new Point(1, 0)));
+		assertFalse(m.canWalk(new Point(0, 0), new Point(-1, 0)));
+		assertFalse(m.canWalk(new Point(0, 0), new Point(200, 0)));
+		cells[0][2] = new Cell(2, 0, true, false, false, false);
+		cells[0][1] = new Cell(1, 0, true, false, true, true);
+		assertTrue(m.canWalk(new Point(1, 0), new Point(2, 0)));
 	}
 
 	/**
@@ -76,21 +76,21 @@ public class MazeTest {
 	@Test
 	public void testFindPossibleDirections() {
 		Cell[][] cells = new Cell[10][10];
-		cells[5][5] = new Cell(5,5, false, false, false, false);
-		cells[6][5] = new Cell(6,5, false, true, true, true);
-		cells[5][6] = new Cell(5,6, true, true, true, false);
-		cells[4][5] = new Cell(4,5, true, true, false, true);
-		cells[5][4] = new Cell(5,4, true, false, true, true);
-		Maze m = new Maze(cells);
-		assertEquals(4, m.findPossibleDirections(new Point(5,5)).size());
-		cells[5][5] = new Cell(5,5, true, false, false, false);
-		cells[6][5] = new Cell(6,5, false, true, true, true);
-		cells[5][6] = new Cell(5,6, true, true, true, false);
-		cells[4][5] = new Cell(4,5, true, true, false, true);
-		cells[5][4] = new Cell(5,4, true, false, true, true);
-		m = new Maze(cells);
-		assertTrue(1 == m.findPossibleDirections(new Point(5,5)).get(0));
-		assertTrue(2 == m.findPossibleDirections(new Point(5,5)).get(1));
-		assertTrue(3 == m.findPossibleDirections(new Point(5,5)).get(2));
+		cells[5][5] = new Cell(5, 5, false, false, false, false);
+		cells[6][5] = new Cell(6, 5, false, true, true, true);
+		cells[5][6] = new Cell(5, 6, true, true, true, false);
+		cells[4][5] = new Cell(4, 5, true, true, false, true);
+		cells[5][4] = new Cell(5, 4, true, false, true, true);
+		Maze m = new Maze(cells, null, null);
+		assertEquals(4, m.findPossibleDirections(new Point(5, 5)).size());
+		cells[5][5] = new Cell(5, 5, true, false, false, false);
+		cells[6][5] = new Cell(6, 5, false, true, true, true);
+		cells[5][6] = new Cell(5, 6, true, true, true, false);
+		cells[4][5] = new Cell(4, 5, true, true, false, true);
+		cells[5][4] = new Cell(5, 4, true, false, true, true);
+		m = new Maze(cells, null, null);
+		assertTrue(1 == m.findPossibleDirections(new Point(5, 5)).get(0));
+		assertTrue(2 == m.findPossibleDirections(new Point(5, 5)).get(1));
+		assertTrue(3 == m.findPossibleDirections(new Point(5, 5)).get(2));
 	}
 }

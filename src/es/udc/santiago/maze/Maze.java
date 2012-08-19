@@ -50,10 +50,12 @@ public class Maze {
 	 * @param cells
 	 *            Maze data.
 	 */
-	public Maze(Cell[][] cells) {
+	public Maze(Cell[][] cells, Point start, Point end) {
 		this.height = cells.length;
 		this.width = cells[0].length;
 		this.data = cells;
+		this.start = start;
+		this.end = end;
 	}
 
 	/**
@@ -340,19 +342,36 @@ public class Maze {
 		return this.findPossibleDirections(point, Path.NO_DIRECTION);
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-		Maze m = new Maze(2, 50);
-		MazeGraphics mg = new MazeGraphics(m);
-		Frame f = mg.getMapFrame("Generated Map");
-		Walker k = new Walker(m);
-		WalkResult wr = k.walk();
-		System.out.println("FOUND!");
-	/*	for (Path p : wr.getWrongPaths()) {
-			mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(
-					Color.DARK_GRAY, p));
+	public static void main(String[] args) {
+		if (args.length != 3) {
+			System.out
+					.println("Bad args, usage: ./MazeSolver height width nproc");
+			System.exit(-1);
 		}
-		mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(Color.BLACK, wr
-				.getCorrectPath()));*/
+		int height = Integer.valueOf(args[0]);
+		int width = Integer.valueOf(args[1]);
+		int nproc = Integer.valueOf(args[2]);
+		Maze m = new Maze(height, width);
+		Walker walker = null;
+		WalkResult walkerResult = null;
+		long time = System.currentTimeMillis();
+		if (nproc == 1) {
+			// Sequential
+			walker = new Walker(m);
+			walkerResult = walker.walk();
+		} else {
+			// Parallel
+			// TODO
+		}
+		long endTime = System.currentTimeMillis();
+		long totalTime = endTime - time;
+		System.out.println("Start point: "+m.getStart());
+		System.out.println("End point: "+m.getEnd());
+		System.out.println("Milliseconds: " + totalTime);
+		MazeGraphics mg = new MazeGraphics(m);
+		Frame f = mg.getMapFrame("Maze");
+		mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(Color.BLACK,
+				walkerResult.getCorrectPath()));
 		f.setVisible(true);
 	}
 }
