@@ -23,7 +23,7 @@ public class MazeTest {
 	public void testMaze() {
 		int height = 1000;
 		int width = 1800;
-		Maze m = new Maze(height, width);
+		Maze m = new Maze(height, width, true);
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				Cell cell = m.getCell(i, j);

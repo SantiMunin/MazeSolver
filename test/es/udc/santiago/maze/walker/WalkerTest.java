@@ -24,7 +24,7 @@ public class WalkerTest {
 		Path result;
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < 10; i++) {
-			m = new Maze(100, 500);
+			m = new Maze(1000, 1000, true);
 			k = new SequentialWalker(m);
 			result = k.walk();
 			assertEquals(result.getCurrentPoint(), m.getEnd());

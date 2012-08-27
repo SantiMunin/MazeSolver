@@ -20,7 +20,7 @@ import es.udc.santiago.maze.walker.Path;
 public class Maze implements Serializable {
 
 	private static final long serialVersionUID = -3629143399901626658L;
-	private static int MINIMUM_DISTANCE_DIVISOR = 3;
+	private static float MINIMUM_DISTANCE_DIVISOR = 3f;
 	private Cell[][] data;
 	private int width;
 	private int height;
@@ -34,8 +34,10 @@ public class Maze implements Serializable {
 	 *            Height
 	 * @param width
 	 *            Width
+	 * @param randomStartEnd
+	 *            points are generated randomly if <i>true</i>.
 	 */
-	public Maze(int height, int width) {
+	public Maze(int height, int width, boolean randomStartEnd) {
 		this.width = width;
 		this.height = height;
 		this.generate();
@@ -71,13 +73,15 @@ public class Maze implements Serializable {
 
 		// Picks start and end
 		Random randomGenerator = new Random();
-		/*this.start = new Point(randomGenerator.nextInt(width),
+		this.start = new Point(randomGenerator.nextInt(width),
 				randomGenerator.nextInt(height));
 		this.end = new Point(randomGenerator.nextInt(width),
-				randomGenerator.nextInt(height));*/
-		this.start = new Point(0,0);
-		this.end = new Point(height-1,width-1);
-		while (start.distance(end) < width / MINIMUM_DISTANCE_DIVISOR) {
+				randomGenerator.nextInt(height));
+		double distanceTopLeft_RightDown = Math.sqrt(Math.pow(width, 2)
+				+ Math.pow(height, 2));
+		while (start.distance(end) < (distanceTopLeft_RightDown / MINIMUM_DISTANCE_DIVISOR)) {
+			this.start = new Point(randomGenerator.nextInt(width),
+					randomGenerator.nextInt(height));
 			this.end = new Point(randomGenerator.nextInt(width),
 					randomGenerator.nextInt(height));
 		}
@@ -306,8 +310,7 @@ public class Maze implements Serializable {
 	 *            Incoming direction (it will be excluded)
 	 * @return A list of directions (integers).
 	 */
-	public List<Byte> findPossibleDirections(Point point,
-			byte incomingDirection) {
+	public List<Byte> findPossibleDirections(Point point, byte incomingDirection) {
 		List<Byte> result = new LinkedList<Byte>();
 		Point nextPoint = new Point(point);
 		nextPoint.setLocation(point.x, point.y);
