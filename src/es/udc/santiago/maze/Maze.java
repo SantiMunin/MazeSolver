@@ -1,19 +1,14 @@
 package es.udc.santiago.maze;
 
-import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Point;
-import java.util.AbstractMap;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import es.udc.santiago.maze.graphics.MazeGraphics;
 import es.udc.santiago.maze.walker.Path;
-import es.udc.santiago.maze.walker.Walker;
-import es.udc.santiago.maze.walker.Walker.WalkResult;
 
 /**
  * The main class of the application. It represents all cells of the maze and
@@ -22,7 +17,9 @@ import es.udc.santiago.maze.walker.Walker.WalkResult;
  * @author Santiago Munín González
  * 
  */
-public class Maze {
+public class Maze implements Serializable {
+
+	private static final long serialVersionUID = -3629143399901626658L;
 	private static int MINIMUM_DISTANCE_DIVISOR = 3;
 	private Cell[][] data;
 	private int width;
@@ -74,10 +71,12 @@ public class Maze {
 
 		// Picks start and end
 		Random randomGenerator = new Random();
-		this.start = new Point(randomGenerator.nextInt(width),
+		/*this.start = new Point(randomGenerator.nextInt(width),
 				randomGenerator.nextInt(height));
 		this.end = new Point(randomGenerator.nextInt(width),
-				randomGenerator.nextInt(height));
+				randomGenerator.nextInt(height));*/
+		this.start = new Point(0,0);
+		this.end = new Point(height-1,width-1);
 		while (start.distance(end) < width / MINIMUM_DISTANCE_DIVISOR) {
 			this.end = new Point(randomGenerator.nextInt(width),
 					randomGenerator.nextInt(height));
@@ -307,9 +306,9 @@ public class Maze {
 	 *            Incoming direction (it will be excluded)
 	 * @return A list of directions (integers).
 	 */
-	public List<Integer> findPossibleDirections(Point point,
-			int incomingDirection) {
-		List<Integer> result = new LinkedList<Integer>();
+	public List<Byte> findPossibleDirections(Point point,
+			byte incomingDirection) {
+		List<Byte> result = new LinkedList<Byte>();
 		Point nextPoint = new Point(point);
 		nextPoint.setLocation(point.x, point.y);
 		if (this.canWalk(point, new Point(point.x, point.y - 1))
@@ -338,40 +337,7 @@ public class Maze {
 	 *            Coordinates of the cell.
 	 * @return A list of directions (integers).
 	 */
-	public List<Integer> findPossibleDirections(Point point) {
+	public List<Byte> findPossibleDirections(Point point) {
 		return this.findPossibleDirections(point, Path.NO_DIRECTION);
-	}
-
-	public static void main(String[] args) {
-		if (args.length != 3) {
-			System.out
-					.println("Bad args, usage: ./MazeSolver height width nproc");
-			System.exit(-1);
-		}
-		int height = Integer.valueOf(args[0]);
-		int width = Integer.valueOf(args[1]);
-		int nproc = Integer.valueOf(args[2]);
-		Maze m = new Maze(height, width);
-		Walker walker = null;
-		WalkResult walkerResult = null;
-		long time = System.currentTimeMillis();
-		if (nproc == 1) {
-			// Sequential
-			walker = new Walker(m);
-			walkerResult = walker.walk();
-		} else {
-			// Parallel
-			// TODO
-		}
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - time;
-		System.out.println("Start point: "+m.getStart());
-		System.out.println("End point: "+m.getEnd());
-		System.out.println("Milliseconds: " + totalTime);
-		MazeGraphics mg = new MazeGraphics(m);
-		Frame f = mg.getMapFrame("Maze");
-		mg.addPath(new AbstractMap.SimpleEntry<Color, Path>(Color.BLACK,
-				walkerResult.getCorrectPath()));
-		f.setVisible(true);
 	}
 }

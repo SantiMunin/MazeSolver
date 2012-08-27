@@ -1,4 +1,4 @@
-package es.udc.santiago.maze.walker;
+package es.udc.santiago.maze.walker.sequential;
 
 import java.awt.Point;
 import java.util.AbstractMap;
@@ -10,6 +10,7 @@ import java.util.Set;
 
 import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.utils.MazeUtils;
+import es.udc.santiago.maze.walker.Path;
 
 /**
  * Represents a walker in the maze.
@@ -17,39 +18,59 @@ import es.udc.santiago.maze.utils.MazeUtils;
  * @author Santiago Munín González
  * 
  */
-public class Walker {
-	private List<Entry<Path, List<Integer>>> pendingDirections;
+public class SequentialWalker {
+	private List<Entry<Path, List<Byte>>> pendingDirections;
 	private Set<Point> walkedDirections;
 	private Maze maze;
 
-	public Walker(Maze maze) {
-		pendingDirections = new LinkedList<Entry<Path, List<Integer>>>();
+	public SequentialWalker(Maze maze) {
+		pendingDirections = new LinkedList<Entry<Path, List<Byte>>>();
 		walkedDirections = new HashSet<Point>();
 		this.maze = maze;
 	}
-
-	public WalkResult walk() {
-		List<Path> wrongPaths = new LinkedList<Path>();
-		List<Integer> directions;
-		int direction = Path.NO_DIRECTION;
+	/**
+	 * Walks through the maze.
+	 * 
+	 * @return Path from start to end.
+	 */
+	public Path walk() {
+		return walk(Path.NO_DIRECTION);
+	}
+	/**
+	 * Walks through the maze.
+	 * 
+	 * @param startDirection
+	 *            Default direction
+	 * @return Path from start to end.
+	 */
+	public Path walk(byte startDirection) {
+		//List<Path> wrongPaths = new LinkedList<Path>();
+		List<Byte> directions;
 
 		// Initializes path and point to maze's start
-		Path currentPath = new Path((Point) maze.getStart().clone());
+		Path currentPath = new Path((Point) maze.getStart());
 		Point currentPoint = (Point) maze.getStart().clone();
+		byte direction = Path.NO_DIRECTION;
+		if (startDirection >= 0 && startDirection <= 3) {
+			if (maze.findPossibleDirections(currentPoint).contains(
+					startDirection)) {
+				direction = startDirection;
+				currentPoint = MazeUtils.getNextPoint(currentPoint, direction);
+				currentPath.addMovement(direction);
+			}
+		}
 
 		while (!maze.getEnd().equals(currentPoint)) {
 			// Finds out all possible directions from a point
 			directions = maze.findPossibleDirections(currentPoint, direction);
-			// If there aren't possible directions, just add the wrong path and
-			// pick a pendant point
+			// If there aren't possible directions, just pick a pendant point
 			if (directions.size() == 0) {
-				wrongPaths.add(currentPath.clone());
 				// If there is pending directions, pick one point and a
 				// direction
 				if (pendingDirections.size() > 0) {
 					boolean newWayFound = false;
 					while (!newWayFound && pendingDirections.size() > 0) {
-						Entry<Path, List<Integer>> pendingDirectionsEntry = pendingDirections
+						Entry<Path, List<Byte>> pendingDirectionsEntry = pendingDirections
 								.get(0);
 						directions = pendingDirectionsEntry.getValue();
 						// All directions entry will have at least 1 element
@@ -65,7 +86,7 @@ public class Walker {
 							currentPath = pendingDirectionsEntry.getKey()
 									.clone();
 							currentPoint = currentPath.getCurrentPoint();
-							List<Integer> tempDirections = pendingDirectionsEntry
+							List<Byte> tempDirections = pendingDirectionsEntry
 									.getValue();
 							tempDirections.remove(0);
 							pendingDirectionsEntry.setValue(tempDirections);
@@ -78,12 +99,12 @@ public class Walker {
 				direction = directions.get(0);
 				if (directions.size() > 1
 						&& !walkedDirections.contains(currentPoint)) {
-					List<Integer> remainingDirections = new LinkedList<Integer>();
+					List<Byte> remainingDirections = new LinkedList<Byte>();
 					for (int i = 1; i < directions.size(); i++) {
 						remainingDirections.add(directions.get(i));
 					}
 					pendingDirections
-							.add(new AbstractMap.SimpleEntry<Path, List<Integer>>(
+							.add(new AbstractMap.SimpleEntry<Path, List<Byte>>(
 									currentPath.clone(), remainingDirections));
 					// FIXME this shouldn't be neccessary
 					walkedDirections.add((Point) currentPoint.clone());
@@ -92,38 +113,6 @@ public class Walker {
 			currentPoint = MazeUtils.getNextPoint(currentPoint, direction);
 			currentPath.addMovement(direction);
 		}
-		return new WalkResult(currentPath, wrongPaths);
-	}
-
-	/**
-	 * Represents the result of the walk.
-	 * 
-	 * @author Santiago Munín González
-	 * 
-	 */
-	public class WalkResult {
-		private Path correctPath;
-		private List<Path> wrongPaths;
-
-		public Path getCorrectPath() {
-			return correctPath;
-		}
-
-		public void setCorrectPath(Path correctPath) {
-			this.correctPath = correctPath;
-		}
-
-		public List<Path> getWrongPaths() {
-			return wrongPaths;
-		}
-
-		public void setWrongPaths(List<Path> wrongPaths) {
-			this.wrongPaths = wrongPaths;
-		}
-
-		public WalkResult(Path correctPath, List<Path> wrongPaths) {
-			this.correctPath = correctPath;
-			this.wrongPaths = wrongPaths;
-		}
+		return currentPath;
 	}
 }

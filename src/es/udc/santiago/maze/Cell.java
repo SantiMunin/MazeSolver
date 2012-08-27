@@ -1,13 +1,16 @@
 package es.udc.santiago.maze;
 
+import java.io.Serializable;
+
 /**
  * Part of a Maze.
  * 
  * @author Santiago Munín González
  * 
  */
-public class Cell {
+public class Cell implements Serializable {
 
+	private static final long serialVersionUID = -5587691380037029385L;
 	private int x;
 	private int y;
 	private boolean topWall;

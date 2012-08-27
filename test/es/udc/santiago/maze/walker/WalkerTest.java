@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import es.udc.santiago.maze.Maze;
-import es.udc.santiago.maze.walker.Walker.WalkResult;
+import es.udc.santiago.maze.walker.sequential.SequentialWalker;
 
 /**
  * Walker class.
@@ -20,15 +20,15 @@ public class WalkerTest {
 	@Test
 	public void testWalk() {
 		Maze m;
-		Walker k;
-		WalkResult wr;
+		SequentialWalker k;
+		Path result;
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < 10; i++) {
 			m = new Maze(100, 500);
-			k = new Walker(m);
-			wr = k.walk();
-			assertEquals(wr.getCorrectPath().getCurrentPoint(), m.getEnd());
-			assertEquals(wr.getCorrectPath().getStart(), m.getStart());
+			k = new SequentialWalker(m);
+			result = k.walk();
+			assertEquals(result.getCurrentPoint(), m.getEnd());
+			assertEquals(result.getStart(), m.getStart());
 		}
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - time;

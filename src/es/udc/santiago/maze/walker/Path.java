@@ -1,6 +1,7 @@
 package es.udc.santiago.maze.walker;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,26 +14,27 @@ import es.udc.santiago.maze.utils.MazeUtils;
  * @author Santiago Munín González
  * 
  */
-public class Path {
+public class Path implements Serializable {
+	private static final long serialVersionUID = 8301650252151209655L;
 	private Point start;
-	public static final int NO_DIRECTION = -1;
-	public static final int UP = 0;
-	public static final int RIGHT = 1;
-	public static final int DOWN = 2;
-	public static final int LEFT = 3;
-	private Queue<Integer> movements;
+	public static final byte NO_DIRECTION = -1;
+	public static final byte UP = 0;
+	public static final byte RIGHT = 1;
+	public static final byte DOWN = 2;
+	public static final byte LEFT = 3;
+	private Queue<Byte> movements;
 
 	public Path(Point start) {
 		this.start = start;
-		this.movements = new LinkedList<Integer>();
+		this.movements = new LinkedList<Byte>();
 	}
 
-	public Path(Point start, Queue<Integer> movements) {
+	public Path(Point start, Queue<Byte> movements) {
 		this.start = start;
 		if (movements != null) {
 			this.movements = movements;
 		} else {
-			this.movements = new LinkedList<Integer>();
+			this.movements = new LinkedList<Byte>();
 		}
 	}
 
@@ -51,19 +53,18 @@ public class Path {
 	 */
 	public Point getCurrentPoint() {
 		Point result = new Point(start);
-		for (Iterator<Integer> iterator = movements.iterator(); iterator
-				.hasNext();) {
-			int direction = (int) iterator.next();
+		for (Iterator<Byte> iterator = movements.iterator(); iterator.hasNext();) {
+			byte direction = (byte) iterator.next();
 			result = MazeUtils.getNextPoint(result, direction);
 		}
 		return result;
 	}
 
-	public Queue<Integer> getMovements() {
-		return new LinkedList<Integer>(this.movements);
+	public Queue<Byte> getMovements() {
+		return new LinkedList<Byte>(this.movements);
 	}
 
-	public void setMovements(Queue<Integer> movements) {
+	public void setMovements(Queue<Byte> movements) {
 		this.movements = movements;
 	}
 
@@ -73,7 +74,7 @@ public class Path {
 	 * @param movement
 	 *            Integer as direction (see Path's constants)
 	 */
-	public void addMovement(int movement) {
+	public void addMovement(byte movement) {
 		this.movements.add(movement);
 	}
 
@@ -86,9 +87,8 @@ public class Path {
 		Queue<Point> result = new LinkedList<Point>();
 		Point currentPoint = new Point(start.x, start.y);
 		result.add(currentPoint);
-		for (Iterator<Integer> iterator = movements.iterator(); iterator
-				.hasNext();) {
-			int direction = iterator.next();
+		for (Iterator<Byte> iterator = movements.iterator(); iterator.hasNext();) {
+			byte direction = iterator.next();
 			currentPoint = MazeUtils.getNextPoint(currentPoint, direction);
 			result.add(currentPoint);
 		}
@@ -99,7 +99,8 @@ public class Path {
 	 * Returns a new path with the same attributes.
 	 */
 	public Path clone() {
-		return new Path((Point) start.clone(), new LinkedList<Integer>(this.movements));
+		return new Path((Point) start.clone(), new LinkedList<Byte>(
+				this.movements));
 	}
 
 	public boolean equals(Object path) {
