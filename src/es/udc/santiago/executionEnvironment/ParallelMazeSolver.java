@@ -9,6 +9,7 @@ import mpi.MPI;
 import mpi.Request;
 import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.graphics.MazeGraphics;
+import es.udc.santiago.maze.utils.MazeUtils;
 import es.udc.santiago.maze.walker.Path;
 import es.udc.santiago.maze.walker.sequential.SequentialWalker;
 
@@ -70,8 +71,8 @@ public class ParallelMazeSolver {
 		byte direction = Path.NO_DIRECTION;
 		if (me == 0) {
 			// Master
-			List<Byte> directions = maze
-					.findPossibleDirections(maze.getStart());
+			List<Byte> directions = MazeUtils.directionsByteToList(maze
+					.findPossibleDirections(maze.getStart()));
 			// Send required data
 			ParallelUtilities.sendMaze(nproc, maze);
 			ParallelUtilities.sendDirections(nproc, directions);

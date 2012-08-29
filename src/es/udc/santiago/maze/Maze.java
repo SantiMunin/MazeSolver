@@ -308,29 +308,27 @@ public class Maze implements Serializable {
 	 *            Coordinates of the cell.
 	 * @param incomingDirection
 	 *            Incoming direction (it will be excluded)
-	 * @return A list of directions (integers).
+	 * @return A byte which contains information of all directions.
 	 */
-	public List<Byte> findPossibleDirections(Point point, byte incomingDirection) {
-		List<Byte> result = new LinkedList<Byte>();
-		Point nextPoint = new Point(point);
-		nextPoint.setLocation(point.x, point.y);
-		if (this.canWalk(point, new Point(point.x, point.y - 1))
-				&& incomingDirection != Path.DOWN) {
-			result.add(Path.UP);
+	public byte findPossibleDirections(Point point, byte incomingDirection) {
+		int result = 15;
+		if (!(this.canWalk(point, new Point(point.x, point.y - 1))
+				&& incomingDirection != Path.DOWN)) {
+			result = result & ~Path.UP;
 		}
-		if (this.canWalk(point, new Point(point.x + 1, point.y))
-				&& incomingDirection != Path.LEFT) {
-			result.add(Path.RIGHT);
+		if (!(this.canWalk(point, new Point(point.x + 1, point.y))
+				&& incomingDirection != Path.LEFT)) {
+			result = result & ~Path.RIGHT;
 		}
-		if (this.canWalk(point, new Point(point.x, point.y + 1))
-				&& incomingDirection != Path.UP) {
-			result.add(Path.DOWN);
+		if (!(this.canWalk(point, new Point(point.x, point.y + 1))
+				&& incomingDirection != Path.UP)) {
+			result = result & ~Path.DOWN;
 		}
-		if (this.canWalk(point, new Point(point.x - 1, point.y))
-				&& incomingDirection != Path.RIGHT) {
-			result.add(Path.LEFT);
+		if (!(this.canWalk(point, new Point(point.x - 1, point.y))
+				&& incomingDirection != Path.RIGHT)) {
+			result = result & ~Path.LEFT;
 		}
-		return result;
+		return (byte) result;
 	}
 
 	/**
@@ -338,9 +336,9 @@ public class Maze implements Serializable {
 	 * 
 	 * @param point
 	 *            Coordinates of the cell.
-	 * @return A list of directions (integers).
+	 * @return A byte which contains information of all directions.
 	 */
-	public List<Byte> findPossibleDirections(Point point) {
+	public byte findPossibleDirections(Point point) {
 		return this.findPossibleDirections(point, Path.NO_DIRECTION);
 	}
 }

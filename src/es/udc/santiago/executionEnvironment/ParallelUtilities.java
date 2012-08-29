@@ -5,6 +5,7 @@ import java.util.List;
 import mpi.MPI;
 import mpi.Request;
 import es.udc.santiago.maze.Maze;
+import es.udc.santiago.maze.utils.MazeUtils;
 import es.udc.santiago.maze.walker.Path;
 
 public class ParallelUtilities {
@@ -121,7 +122,7 @@ public class ParallelUtilities {
 	public static Maze receiveMaze(int me) {
 		Maze[] m = new Maze[1];
 		MPI.COMM_WORLD.Recv(m, 0, 1, MPI.OBJECT, 0, TAG_MAZE);
-		if (me > m[0].findPossibleDirections(m[0].getStart()).size()) {
+		if (me > MazeUtils.directionsByteToList(m[0].findPossibleDirections(m[0].getStart())).size()) {
 			log(me, "This process is no needed, exiting.");
 			MPI.Finalize();
 			System.exit(0);

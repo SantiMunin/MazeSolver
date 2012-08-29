@@ -8,6 +8,8 @@ import java.awt.Point;
 
 import org.junit.Test;
 
+import es.udc.santiago.maze.utils.MazeUtils;
+
 /**
  * Checks the correct functionality of Maze class.
  * 
@@ -82,15 +84,21 @@ public class MazeTest {
 		cells[4][5] = new Cell(4, 5, true, true, false, true);
 		cells[5][4] = new Cell(5, 4, true, false, true, true);
 		Maze m = new Maze(cells, null, null);
-		assertEquals(4, m.findPossibleDirections(new Point(5, 5)).size());
+		assertEquals(
+				4,
+				MazeUtils.directionsByteToList(
+						m.findPossibleDirections(new Point(5, 5))).size());
 		cells[5][5] = new Cell(5, 5, true, false, false, false);
 		cells[6][5] = new Cell(6, 5, false, true, true, true);
 		cells[5][6] = new Cell(5, 6, true, true, true, false);
 		cells[4][5] = new Cell(4, 5, true, true, false, true);
 		cells[5][4] = new Cell(5, 4, true, false, true, true);
 		m = new Maze(cells, null, null);
-		assertTrue(1 == m.findPossibleDirections(new Point(5, 5)).get(0));
-		assertTrue(2 == m.findPossibleDirections(new Point(5, 5)).get(1));
-		assertTrue(3 == m.findPossibleDirections(new Point(5, 5)).get(2));
+		assertTrue(1 == MazeUtils.directionsByteToList(
+				m.findPossibleDirections(new Point(5, 5))).get(0));
+		assertTrue(2 == MazeUtils.directionsByteToList(
+				m.findPossibleDirections(new Point(5, 5))).get(1));
+		assertTrue(3 == MazeUtils.directionsByteToList(
+				m.findPossibleDirections(new Point(5, 5))).get(2));
 	}
 }

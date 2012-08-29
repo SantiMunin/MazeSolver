@@ -18,10 +18,10 @@ public class Path implements Serializable {
 	private static final long serialVersionUID = 8301650252151209655L;
 	private Point start;
 	public static final byte NO_DIRECTION = -1;
-	public static final byte UP = 0;
-	public static final byte RIGHT = 1;
-	public static final byte DOWN = 2;
-	public static final byte LEFT = 3;
+	public static final byte UP = 0x1;
+	public static final byte RIGHT = 0x2;
+	public static final byte DOWN = 0x4;
+	public static final byte LEFT = 0x8;
 	private Queue<Byte> movements;
 
 	public Path(Point start) {
