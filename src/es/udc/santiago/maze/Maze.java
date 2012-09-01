@@ -339,6 +339,6 @@ public class Maze implements Serializable {
 	 * @return A byte which contains information of all directions.
 	 */
 	public byte findPossibleDirections(Point point) {
-		return this.findPossibleDirections(point, Path.NO_DIRECTION);
+ 		return this.findPossibleDirections(point, Path.NO_DIRECTION);
 	}
 }

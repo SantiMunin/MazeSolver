@@ -8,6 +8,12 @@ import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.utils.MazeUtils;
 import es.udc.santiago.maze.walker.Path;
 
+/**
+ * Parallelization methods.
+ * 
+ * @author Santiago Munín González
+ * 
+ */
 public class ParallelUtilities {
 	private static final byte TAG_MAZE = 1;
 	private static final byte TAG_DIRECTION = 2;
@@ -67,13 +73,14 @@ public class ParallelUtilities {
 		}
 		log(0, "Directions sent.");
 	}
+
 	/**
-	 * Get the request of an async-receiving action (direction).
+	 * Performs an async-receiving action (direction) and returns the request.
+	 * 
 	 * @return Receive request.
 	 */
 	public static Request receiveFinishRequest() {
-		return MPI.COMM_WORLD.Irecv(new byte[1], 0, 1,
-				MPI.BYTE, 0, TAG_STOP);
+		return MPI.COMM_WORLD.Irecv(new byte[1], 0, 1, MPI.BYTE, 0, TAG_STOP);
 	}
 
 	/**
@@ -90,16 +97,17 @@ public class ParallelUtilities {
 			MPI.COMM_WORLD.Isend(temp, 0, 1, MPI.BYTE, i, TAG_STOP);
 		}
 	}
+
 	/**
-	 * Sends result to master process.
+	 * Sends result to the master process.
 	 */
 	public static void sendResult(Path resultPath) {
 		Path[] pathArr = new Path[1];
 		pathArr[0] = resultPath;
-		MPI.COMM_WORLD.Send(pathArr, 0, 1, MPI.OBJECT, 0,
-				TAG_RESULT);
+		MPI.COMM_WORLD.Send(pathArr, 0, 1, MPI.OBJECT, 0, TAG_RESULT);
 		pathArr = null;
 	}
+
 	/**
 	 * Receives the correct path.
 	 * 
@@ -113,7 +121,7 @@ public class ParallelUtilities {
 	}
 
 	/**
-	 * Receives maze.
+	 * Receives the maze.
 	 * 
 	 * @param me
 	 *            Process ID.
@@ -122,7 +130,8 @@ public class ParallelUtilities {
 	public static Maze receiveMaze(int me) {
 		Maze[] m = new Maze[1];
 		MPI.COMM_WORLD.Recv(m, 0, 1, MPI.OBJECT, 0, TAG_MAZE);
-		if (me > MazeUtils.directionsByteToList(m[0].findPossibleDirections(m[0].getStart())).size()) {
+		if (me > MazeUtils.directionsByteToList(
+				m[0].findPossibleDirections(m[0].getStart())).size()) {
 			log(me, "This process is no needed, exiting.");
 			MPI.Finalize();
 			System.exit(0);
@@ -131,7 +140,7 @@ public class ParallelUtilities {
 	}
 
 	/**
-	 * Receives direction.
+	 * Receives a direction.
 	 * 
 	 * @param me
 	 *            Process ID.

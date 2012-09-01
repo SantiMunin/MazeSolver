@@ -9,7 +9,7 @@ import java.util.Queue;
 import es.udc.santiago.maze.utils.MazeUtils;
 
 /**
- * This class represents the path done by a process.
+ * This class represents the path walked by a process.
  * 
  * @author Santiago Munín González
  * 
@@ -47,7 +47,8 @@ public class Path implements Serializable {
 	}
 
 	/**
-	 * Gets the current point from the directions walked.
+	 * Gets the current point (walking all saved directions from the starting
+	 * point).
 	 * 
 	 * @return coordinates x and y.
 	 */
@@ -95,9 +96,6 @@ public class Path implements Serializable {
 		return result;
 	}
 
-	/**
-	 * Returns a new path with the same attributes.
-	 */
 	public Path clone() {
 		return new Path((Point) start.clone(), new LinkedList<Byte>(
 				this.movements));

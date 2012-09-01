@@ -25,7 +25,7 @@ public class ParallelMazeSolver {
 
 	public static void main(String[] args) throws InterruptedException {
 		if (args.length != 8) {
-			if (Integer.valueOf(args[0]) == 0) { // Father
+			if (Integer.valueOf(args[0]) == 0) { // Master
 				printUsage();
 			}
 			System.exit(-1);
@@ -49,7 +49,7 @@ public class ParallelMazeSolver {
 			printResult(maze, result, startTime);
 		} else {
 			doJob(nproc, me, maze);
-			ParallelUtilities.log(me, "EXITING");
+			ParallelUtilities.log(me, "Process finished.");
 		}
 		MPI.Finalize();
 	}
@@ -127,7 +127,7 @@ public class ParallelMazeSolver {
 	}
 
 	/**
-	 * Prints work's result.
+	 * Prints work result.
 	 * 
 	 * @param maze
 	 *            Maze.
@@ -152,7 +152,7 @@ public class ParallelMazeSolver {
 	}
 
 	/**
-	 * Prints correct usage.
+	 * Prints the correct usage.
 	 */
 	private static void printUsage() {
 		System.out.println("Wrong number of arguments. Usage:");

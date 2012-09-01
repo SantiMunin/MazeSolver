@@ -3,7 +3,7 @@ package es.udc.santiago.maze;
 import java.io.Serializable;
 
 /**
- * Part of a Maze.
+ * Single cell of a maze.
  * 
  * @author Santiago Munín González
  * 
@@ -110,7 +110,7 @@ public class Cell implements Serializable {
 	}
 
 	/**
-	 * Determines if the cell is surrounded by all walls.
+	 * Determines if the cell is surrounded by all the walls.
 	 * 
 	 * @return boolean.
 	 */
@@ -120,7 +120,7 @@ public class Cell implements Serializable {
 	}
 
 	/**
-	 * Determines if the cell has any wall.
+	 * Determines if the cell has any wall up.
 	 * 
 	 * @return boolean.
 	 */

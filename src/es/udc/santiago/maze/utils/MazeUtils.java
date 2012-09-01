@@ -9,14 +9,14 @@ import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.walker.Path;
 
 /**
- * Class with some static methods which will help the development process.
+ * Utilities which will help the development process.
  * 
  * @author Santiago Munín González
  * 
  */
 public class MazeUtils {
 	/**
-	 * Gets the next point to walk.
+	 * Gets the next point
 	 * 
 	 * @param from
 	 *            Original point.
@@ -45,7 +45,7 @@ public class MazeUtils {
 	}
 
 	/**
-	 * Prints the java code which will generate a given maze.
+	 * Prints the java code which will generate the given maze.
 	 * 
 	 * @param maze
 	 */
@@ -64,7 +64,6 @@ public class MazeUtils {
 		System.out.println("Start: " + maze.getStart());
 		System.out.println("End: " + maze.getEnd());
 	}
-
 
 	/**
 	 * Converts a byte of directions to a List in order to get a more friendly
@@ -93,7 +92,9 @@ public class MazeUtils {
 
 	/**
 	 * Converts a list of directions in a single byte.
-	 * @param directions List.
+	 * 
+	 * @param directions
+	 *            List.
 	 * @return Byte.
 	 */
 	public static Byte directionsListToByte(List<Byte> directions) {

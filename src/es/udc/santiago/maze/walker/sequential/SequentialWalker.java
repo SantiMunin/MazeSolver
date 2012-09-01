@@ -54,7 +54,8 @@ public class SequentialWalker {
 		Point currentPoint = (Point) maze.getStart().clone();
 		byte direction = Path.NO_DIRECTION;
 		if (startDirection >= 0 && startDirection <= 3) {
-			if (MazeUtils.directionsByteToList(maze.findPossibleDirections(currentPoint)).contains(
+			if (MazeUtils.directionsByteToList(
+					maze.findPossibleDirections(currentPoint)).contains(
 					startDirection)) {
 				direction = startDirection;
 				currentPoint = MazeUtils.getNextPoint(currentPoint, direction);
@@ -64,7 +65,8 @@ public class SequentialWalker {
 
 		while (!maze.getEnd().equals(currentPoint)) {
 			// Finds out all possible directions from a point
-			directions = MazeUtils.directionsByteToList(maze.findPossibleDirections(currentPoint, direction));
+			directions = MazeUtils.directionsByteToList(maze
+					.findPossibleDirections(currentPoint, direction));
 			// If there aren't possible directions, just pick a pendant point
 			if (directions.size() == 0) {
 				// If there is pending directions, pick one point and a
@@ -74,7 +76,9 @@ public class SequentialWalker {
 					while (!newWayFound && pendingDirections.size() > 0) {
 						Entry<Path, Byte> pendingDirectionsEntry = pendingDirections
 								.get(0);
-						directions = MazeUtils.directionsByteToList(pendingDirectionsEntry.getValue());
+						directions = MazeUtils
+								.directionsByteToList(pendingDirectionsEntry
+										.getValue());
 						// All directions entry will have at least 1 element
 						direction = directions.get(0);
 						if (directions.size() == 1) {
@@ -88,10 +92,12 @@ public class SequentialWalker {
 							currentPath = pendingDirectionsEntry.getKey()
 									.clone();
 							currentPoint = currentPath.getCurrentPoint();
-							List<Byte> tempDirections = MazeUtils.directionsByteToList(pendingDirectionsEntry
-									.getValue());
+							List<Byte> tempDirections = MazeUtils
+									.directionsByteToList(pendingDirectionsEntry
+											.getValue());
 							tempDirections.remove(0);
-							pendingDirectionsEntry.setValue(MazeUtils.directionsListToByte(tempDirections));
+							pendingDirectionsEntry.setValue(MazeUtils
+									.directionsListToByte(tempDirections));
 							pendingDirections.set(0, pendingDirectionsEntry);
 							newWayFound = true;
 						}
@@ -107,8 +113,9 @@ public class SequentialWalker {
 					}
 					pendingDirections
 							.add(new AbstractMap.SimpleEntry<Path, Byte>(
-									currentPath.clone(), MazeUtils.directionsListToByte(remainingDirections)));
-					// FIXME this shouldn't be neccessary
+									currentPath.clone(),
+									MazeUtils
+											.directionsListToByte(remainingDirections)));
 					walkedDirections.add((Point) currentPoint.clone());
 				}
 			}

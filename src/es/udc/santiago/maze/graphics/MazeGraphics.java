@@ -17,6 +17,12 @@ import es.udc.santiago.maze.Cell;
 import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.walker.Path;
 
+/**
+ * Maze drawer.
+ * 
+ * @author Santiago Munín González
+ * 
+ */
 public class MazeGraphics {
 	private static int SIZE = 8;
 	private static int MARGIN = 5;
@@ -27,9 +33,12 @@ public class MazeGraphics {
 	public MazeGraphics(Maze m) {
 		this.m = m;
 	}
+
 	/**
 	 * Generates a frame which shows the maze.
-	 * @param title Window title.
+	 * 
+	 * @param title
+	 *            Window title.
 	 * @return Frame.
 	 */
 	public Frame getMapFrame(String title) {
@@ -50,7 +59,7 @@ public class MazeGraphics {
 	}
 
 	/**
-	 * Adds a path to be painted.
+	 * Adds a path to paint.
 	 * 
 	 * @param path
 	 */
@@ -60,9 +69,7 @@ public class MazeGraphics {
 	}
 
 	private class MazeCanvas extends Canvas {
-		/**
-		 * 
-		 */
+
 		private static final long serialVersionUID = -8025702657222278281L;
 
 		Maze maze;
@@ -72,6 +79,7 @@ public class MazeGraphics {
 			this.maze = maze;
 			pathsToDraw = new LinkedList<Entry<Color, Path>>();
 		}
+
 		public void paint(Graphics g) {
 
 			Point start = maze.getStart();
