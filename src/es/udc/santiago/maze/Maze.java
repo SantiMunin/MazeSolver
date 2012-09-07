@@ -18,7 +18,6 @@ import es.udc.santiago.maze.walker.Path;
  * 
  */
 public class Maze implements Serializable {
-
 	private static final long serialVersionUID = -3629143399901626658L;
 	private static float MINIMUM_DISTANCE_DIVISOR = 3f;
 	private Cell[][] data;

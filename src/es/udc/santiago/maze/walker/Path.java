@@ -17,7 +17,7 @@ import es.udc.santiago.maze.utils.MazeUtils;
 public class Path implements Serializable {
 	private static final long serialVersionUID = 8301650252151209655L;
 	private Point start;
-	public static final byte NO_DIRECTION = -1;
+	public static final byte NO_DIRECTION = 0;
 	public static final byte UP = 0x1;
 	public static final byte RIGHT = 0x2;
 	public static final byte DOWN = 0x4;
