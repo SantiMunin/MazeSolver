@@ -17,7 +17,9 @@ import es.udc.santiago.maze.walker.parallel.ParallelWalkingManager;
 public class ParallelUtils {
 	private static final byte TAG_MAZE = 1;
 	private static final byte TAG_DIRECTION = 2;
-	private static final byte TAG_RESULT = 3;
+	private static final byte TAG_PATH_SIZE = 3;
+	private static final byte TAG_PATH_CONTENT = 4;
+	public static final byte TAG_COMMUNICATION = 5;
 
 	/**
 	 * Prints information.
@@ -75,50 +77,17 @@ public class ParallelUtils {
 	}
 
 	/**
-	 * Sends directions to sons (async).
-	 * 
-	 * @param processes
-	 *            List of processes.
-	 * @param directions
-	 *            List of directions.
-	 */
-	public static void sendDirectionsAsync(List<Integer> processes,
-			List<Byte> directions) {
-		for (int i = 0; i < directions.size() && i < processes.size(); i++) {
-			sendDirectionAsync(processes.get(i), directions.get(i));
-		}
-	}
-
-	/**
-	 * Sends a direction to a process (async).
+	 * Sends a direction to a process.
 	 * 
 	 * @param process
 	 *            Process ID.
 	 * @param direction
 	 *            Direction.
-	 */
-	public static void sendDirectionAsync(int process, byte direction) {
-		byte[] temp = new byte[1];
-		temp[0] = direction;
-		MPI.COMM_WORLD.Irsend(temp, 0, 1, MPI.BYTE, process, TAG_DIRECTION);
-	}
-
-	/**
-	 * Sends a direction to a process and the path followed to reach its start
-	 * point.
-	 * 
-	 * @param process
-	 *            Process ID.
-	 * @param direction
-	 *            Direction.
-	 * @param path
-	 *            Path.
 	 */
 	public static void sendDirection(int process, byte direction, Path path) {
 		byte[] temp = new byte[1];
 		temp[0] = direction;
 		MPI.COMM_WORLD.Send(temp, 0, 1, MPI.BYTE, process, TAG_DIRECTION);
-		sendPath(process, path);
 	}
 
 	/**
@@ -134,7 +103,6 @@ public class ParallelUtils {
 			temp[0] = Path.NO_DIRECTION;
 			MPI.COMM_WORLD.Send(temp, 0, 1, MPI.BYTE, i, TAG_DIRECTION);
 		}
-		//TODO fix
 	}
 
 	/**
@@ -146,25 +114,12 @@ public class ParallelUtils {
 	 *            Path.
 	 */
 	public static void sendPath(int process, Path path) {
-		Path[] pathArr = new Path[1];
-		pathArr[0] = path;
-		MPI.COMM_WORLD.Send(pathArr, 0, 1, MPI.OBJECT, process, TAG_RESULT);
-		pathArr = null;
-	}
-
-	/**
-	 * Sends a path (asynchronous message).
-	 * 
-	 * @param process
-	 *            Destination.
-	 * @param path
-	 *            Path.
-	 */
-	public static void sendPathAsync(int process, Path path) {
-		Path[] pathArr = new Path[1];
-		pathArr[0] = path;
-		MPI.COMM_WORLD.Irsend(pathArr, 0, 1, MPI.OBJECT, process, TAG_RESULT);
-		pathArr = null;
+		int[] array = path.getAsIntArray();
+		int[] data = new int[1];
+		data[0] = array.length;
+		MPI.COMM_WORLD.Send(data, 0, 1, MPI.INT, process, TAG_PATH_SIZE);
+		MPI.COMM_WORLD.Send(array, 0, array.length, MPI.INT, process,
+				TAG_PATH_CONTENT);
 	}
 
 	/**
@@ -178,9 +133,14 @@ public class ParallelUtils {
 	 * @return Correct path.
 	 */
 	public static Path receivePath(int me, int source) {
-		Path[] result = new Path[1];
-		MPI.COMM_WORLD.Recv(result, 0, 1, MPI.OBJECT, source, TAG_RESULT);
-		return result[0];
+		log(me, "Receiving path");
+		int[] data = new int[1];
+		MPI.COMM_WORLD.Recv(data, 0, 1, MPI.INT, source, TAG_PATH_SIZE);
+		data = new int[data[0]];
+		MPI.COMM_WORLD
+				.Recv(data, 0, data[0], MPI.INT, source, TAG_PATH_CONTENT);
+		log(me, "Received path");
+		return new Path(data);
 	}
 
 	/**
@@ -201,11 +161,15 @@ public class ParallelUtils {
 	 * 
 	 * @param me
 	 *            Process ID.
+	 * @param from
+	 *            Sender process ID.
 	 * @return Direction
 	 */
-	public static byte receiveDirection(int me) {
+	public static byte receiveDirection(int me, int from) {
+		log(me, "Receiving direction");
 		byte[] direction = new byte[1];
 		MPI.COMM_WORLD.Recv(direction, 0, 1, MPI.BYTE, 0, TAG_DIRECTION);
+		log(me, "Received direction");
 		return direction[0];
 	}
 
@@ -220,7 +184,7 @@ public class ParallelUtils {
 		byteArr[0] = ParallelWalkingManager.WALL_FOUND;
 		byteArr[1] = (byte) me;
 		byteArr[2] = null;
-		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, MPI.ANY_TAG);
+		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, TAG_COMMUNICATION);
 	}
 
 	/**
@@ -239,7 +203,7 @@ public class ParallelUtils {
 		byteArr[0] = ParallelWalkingManager.NEW_DIRECTIONS;
 		byteArr[1] = (byte) me;
 		byteArr[2] = directions;
-		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, MPI.ANY_TAG);
+		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, TAG_COMMUNICATION);
 		sendPath(0, path);
 	}
 
@@ -256,7 +220,7 @@ public class ParallelUtils {
 		byteArr[0] = ParallelWalkingManager.PATH_FOUND;
 		byteArr[1] = (byte) me;
 		byteArr[2] = null;
-		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, MPI.ANY_TAG);
+		MPI.COMM_WORLD.Send(byteArr, 0, 3, MPI.BYTE, 0, TAG_COMMUNICATION);
 		sendPath(0, path);
 		log(me, "RESULT SENT!");
 	}

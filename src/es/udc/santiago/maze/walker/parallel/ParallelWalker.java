@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Queue;
 
 import mpi.MPI;
-
 import es.udc.santiago.executionEnvironment.ParallelUtils;
 import es.udc.santiago.maze.Maze;
 import es.udc.santiago.maze.utils.MazeUtils;
@@ -38,7 +37,7 @@ public class ParallelWalker {
 		Path currentPath;
 		WalkResult wr;
 		while (true) {
-			Byte receivedDirections = ParallelUtils.receiveDirection(me);
+			Byte receivedDirections = ParallelUtils.receiveDirection(me,0);
 			if (receivedDirections == Path.NO_DIRECTION) {
 				ParallelUtils.log(me, "Kill signal received.");
 				return;
@@ -63,21 +62,22 @@ public class ParallelWalker {
 							Point currentPoint = wr.path.getCurrentPoint();
 							if (!walkedPoints.contains(currentPoint)) {
 								walkedPoints.add(currentPoint);
-								if (newDirsSent < (MPI.COMM_WORLD.Size()-4)) {
-									newDirsSent += wr.newDirections.size();
+								/*if (newDirsSent > 10000) {*/
+								//	newDirsSent += wr.newDirections.size();
+								ParallelUtils.log(me, "Sending dirs");
 									ParallelUtils
 											.sendNewDirections(
 													me,
 													wr.path,
 													MazeUtils
 															.directionsListToByte(wr.newDirections));
-								} else {
+							/*	} else {
 									pendingDirections
 											.add(new AbstractMap.SimpleEntry<Path, Byte>(
 													wr.path,
 													MazeUtils
 															.directionsListToByte(wr.newDirections)));
-								}
+								}*/
 							}
 						}
 					}

@@ -37,6 +37,18 @@ public class Path implements Serializable {
 			this.movements = new LinkedList<Byte>();
 		}
 	}
+	/**
+	 * Creates a path from an int's array.
+	 * @see #getAsIntArray()
+	 * @param array
+	 */
+	public Path(int[] array) {
+		this.start = new Point(array[0], array[1]);
+		this.movements = new LinkedList<Byte>();
+		for (int i = 2; i < array.length; i++) {
+			this.movements.add((byte) array[i]);
+		}
+	}
 
 	public Point getStart() {
 		return start;
@@ -63,6 +75,24 @@ public class Path implements Serializable {
 
 	public Queue<Byte> getMovements() {
 		return new LinkedList<Byte>(this.movements);
+	}
+
+	/**
+	 * Returns all Path's data in an array.
+	 * 
+	 * @return A byte array with array[0] = point.x, array[1] = point.y, array[2..n] = directions
+	 */
+	public int[] getAsIntArray() {
+		int[] result;
+		int size = this.movements.size();
+		result = (size == 0) ? new int[2] : new int[2 + size];
+		result[0] = this.start.x;
+		result[1] = this.start.y;
+		int i = 2;
+		for (byte dir : this.movements) {
+			result[i++] = dir;
+		}
+		return result;
 	}
 
 	public void setMovements(Queue<Byte> movements) {

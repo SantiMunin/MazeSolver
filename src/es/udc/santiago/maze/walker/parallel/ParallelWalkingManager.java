@@ -136,10 +136,14 @@ public class ParallelWalkingManager {
 	private void wallFound(Byte son) {
 		this.freeSons.add((int) son);
 	}
+
 	/**
 	 * New directions event
-	 * @param son Son process ID.
-	 * @param directions Byte of directions.
+	 * 
+	 * @param son
+	 *            Son process ID.
+	 * @param directions
+	 *            Byte of directions.
 	 */
 	private void newDirections(Byte son, Byte directions) {
 		Path p = ParallelUtils.receivePath(0, son);
@@ -173,7 +177,7 @@ public class ParallelWalkingManager {
 		while (!found) {
 			distributePendingDirections();
 			MPI.COMM_WORLD.Recv(data, 0, 3, MPI.BYTE, MPI.ANY_SOURCE,
-					MPI.ANY_TAG);
+					ParallelUtils.TAG_COMMUNICATION);
 			processOperation(data);
 		}
 	}
